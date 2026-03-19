@@ -1,0 +1,5 @@
+{
+  "name": "Visual Kid Timer",
+  "description": "A visual countdown timer for children using intuitive progress bars and themes instead of numbers.",
+  "requestFramePermissions": []
+}
