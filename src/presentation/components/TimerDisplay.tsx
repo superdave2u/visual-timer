@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
+import { Play } from 'lucide-react';
 import { ThemeType, ThemeStyles } from '../../domain/types';
 import { MicroText } from './MicroText';
 
@@ -18,6 +19,7 @@ interface TimerDisplayProps {
   isFinished: boolean;
   showTimePassed: boolean;
   showTimeRemaining: boolean;
+  onToggle: () => void;
 }
 
 export const TimerDisplay: React.FC<TimerDisplayProps> = ({
@@ -30,6 +32,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   isFinished,
   showTimePassed,
   showTimeRemaining,
+  onToggle,
 }) => {
   const formatTimeWithDecimals = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -48,7 +51,6 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
           <div className="flex flex-col items-center gap-2">
             {showTimePassed && (
               <div className="flex flex-col items-center">
-                <span className="text-xs font-black uppercase tracking-widest mb-1 theme-text-muted">Passed</span>
                 <span className="text-6xl font-mono font-black tabular-nums theme-text">
                   {formatTimeWithDecimals(timePassed)}
                 </span>
@@ -56,7 +58,6 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             )}
             {showTimeRemaining && (
               <div className="flex flex-col items-center">
-                <span className="text-xs font-black uppercase tracking-widest mb-1 theme-text-muted">Remaining</span>
                 <span className="text-6xl font-mono font-black tabular-nums theme-text">
                   {formatTimeWithDecimals(timeLeft)}
                 </span>
@@ -70,7 +71,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
         <div className="w-full h-full flex items-center justify-center p-12">
           <div className="relative w-full max-w-[280px] aspect-[1/2] flex flex-col items-center">
             {/* Top Bulb */}
-            <div 
+            <div
               className="w-full h-1/2 relative bg-slate-200/50 backdrop-blur-sm border-x-4 border-t-4 border-slate-800 rounded-t-full overflow-hidden"
               style={{ clipPath: 'polygon(0 0, 100% 0, 50% 100%)' }}
             >
@@ -84,7 +85,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             <div className="w-4 h-2 bg-slate-800 z-20" />
 
             {/* Bottom Bulb */}
-            <div 
+            <div
               className="w-full h-1/2 relative bg-slate-200/50 backdrop-blur-sm border-x-4 border-b-4 border-slate-800 rounded-b-full overflow-hidden"
               style={{ clipPath: 'polygon(50% 0, 0 100%, 100% 100%)' }}
             >
@@ -108,15 +109,32 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             <div className="absolute -top-4 left-0 right-0 h-4 bg-slate-800 rounded-full" />
             <div className="absolute -bottom-4 left-0 right-0 h-4 bg-slate-800 rounded-full" />
 
-            {/* Pulsating Goal Icon for Hourglass */}
-            {isFinished && (
-              <div className="absolute inset-0 flex items-center justify-center z-30">
-                <motion.span 
-                  className="text-9xl sticker-effect"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            {/* Play/Start Button for Hourglass */}
+            {!isFinished && (
+              <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 flex flex-col items-center">
+                <button
+                  onClick={onToggle}
+                  className={`w-24 h-24 flex items-center justify-center rounded-full shadow-2xl active:scale-90 transition-all border-4 border-white/50 backdrop-blur-sm pointer-events-auto ${styles.bar} text-white`}
                 >
-                  🎉
+                  {isRunning ? (
+                    <span className="text-5xl sticker-effect leading-none">{styles.startIcon}</span>
+                  ) : (
+                    <Play className="w-8 h-8" />
+                  )}
+                </button>
+              </div>
+            )}
+
+            {/* Pulsating Goal Icon for Hourglass */}
+            {totalTime > 0 && (
+              <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
+                <motion.span
+                  className="text-9xl sticker-effect"
+                  animate={isFinished ? { scale: [1, 1.2, 1] } : {}}
+                  transition={isFinished ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : {}}
+                  style={{ opacity: progress }}
+                >
+                  {isFinished ? '🎉' : styles.goalIcon}
                 </motion.span>
               </div>
             )}
@@ -136,15 +154,32 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
                 transition={{ type: 'spring', bounce: 0, duration: 0.5 }}
               />
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <motion.span 
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <motion.span
                 className="text-9xl sticker-effect"
                 animate={isFinished ? { scale: [1, 1.2, 1] } : {}}
                 transition={isFinished ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : {}}
+                style={{ opacity: progress }}
               >
                 {isFinished ? '🎉' : styles.goalIcon}
               </motion.span>
             </div>
+
+            {/* Play/Start Button for Circle */}
+            {!isFinished && (
+              <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
+                <button
+                  onClick={onToggle}
+                  className={`w-24 h-24 flex items-center justify-center rounded-full shadow-2xl active:scale-90 transition-all border-4 border-white/50 backdrop-blur-sm pointer-events-auto ${styles.bar} text-white`}
+                >
+                  {isRunning ? (
+                    <span className="text-5xl sticker-effect leading-none">{styles.startIcon}</span>
+                  ) : (
+                    <Play className="w-8 h-8" />
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       ) : (
@@ -159,21 +194,32 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
             {!isFinished ? (
               <div className="absolute inset-0 flex flex-col justify-between py-24 px-8">
                 <div className="flex flex-col items-center">
-                  <span className="text-8xl mb-4 sticker-effect">
+                  <motion.span
+                    className="text-8xl mb-4 sticker-effect"
+                    style={{ opacity: progress }}
+                  >
                     {styles.goalIcon}
-                  </span>
-                  <span className="text-xs font-black uppercase tracking-[0.3em] theme-text">Goal</span>
+                  </motion.span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <span className="text-5xl sticker-effect opacity-80">{styles.startIcon}</span>
-                  <span className="text-xs font-black uppercase tracking-[0.3em] mt-2 theme-text-muted">Start</span>
+                  <button
+                    onClick={onToggle}
+                    className={`w-24 h-24 flex items-center justify-center rounded-full shadow-2xl active:scale-90 transition-all border-4 border-white/50 backdrop-blur-sm pointer-events-auto ${styles.bar} text-white`}
+                  >
+                    {isRunning ? (
+                      <span className="text-5xl sticker-effect leading-none">{styles.startIcon}</span>
+                    ) : (
+                      <Play className="w-8 h-8" />
+                    )}
+                  </button>
                 </div>
               </div>
             ) : (
-              <motion.span 
+              <motion.span
                 className="text-9xl sticker-effect"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                style={{ opacity: progress }}
               >
                 🎉
               </motion.span>

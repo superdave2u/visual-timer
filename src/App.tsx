@@ -9,7 +9,6 @@ import { useSettings } from './application/hooks/useSettings';
 import { getThemeStyles } from './presentation/theme/styles';
 import { TimerDisplay } from './presentation/components/TimerDisplay';
 import { Header } from './presentation/components/Header';
-import { Controls } from './presentation/components/Controls';
 import { Presets } from './presentation/components/Presets';
 import { CustomTimeModal } from './presentation/components/CustomTimeModal';
 import { SettingsModal } from './presentation/components/SettingsModal';
@@ -49,6 +48,7 @@ export default function App() {
         isFinished={isFinished}
         showTimePassed={settings.showTimePassed}
         showTimeRemaining={settings.showTimeRemaining}
+        onToggle={toggleTimer}
       />
 
       {!isFinished && (
@@ -57,12 +57,6 @@ export default function App() {
             isRunning={isRunning}
             accentColor={themeStyles.accent}
             onSettingsClick={toggleSettings}
-          />
-
-          <Controls
-            isRunning={isRunning}
-            totalTime={totalTime}
-            onToggle={toggleTimer}
           />
 
           <Presets

@@ -9,6 +9,10 @@
             drop-shadow(3px 3px 0 rgba(0,0,0,0.1));
   }
 
+  .theme-sticker {
+   text-shadow: 2px 2px 0px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
+  }
+
   .theme-text {
     @apply text-white;
     text-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
